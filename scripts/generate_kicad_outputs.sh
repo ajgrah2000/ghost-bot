@@ -12,6 +12,7 @@ case $i in
     -sp|--sch-pdf) GENERATE_SCH_PDF="1";;
     -pp|--pcb-pdf) GENERATE_PCB_PDF="1";;
     -b|--bom) GENERATE_BOM="1";;
+    -w|--wrl) GENERATE_WRL="1";;
     -h|--help)
         echo "Usage: generate_kicad_outputs.sh [--help] [--all] [--drc] [--gerber] [--drill] [--step] [--sch-pdf] [--pcb-pdf] [--bom]"
         echo ""
@@ -25,6 +26,7 @@ case $i in
         echo "  -sp|--sch-pdf   generate schematic PDF"
         echo "  -pp|--pcb-pdf   generate PCB PDF"
         echo "  -b|--bom        generate bill of materials csv"
+        echo "  -w|--wrl        generate wrl output"
         echo "  -h,--help       print this help"
         exit;;
 esac
@@ -46,6 +48,7 @@ main()
     DRILL_DIR=$OUTPUT_ROOT_DIR/drill
     STEP_DIR=$OUTPUT_ROOT_DIR/step
     PDF_DIR=$OUTPUT_ROOT_DIR/pdf
+    WRL_DIR=$OUTPUT_ROOT_DIR/wrl
     BOM_DIR=$OUTPUT_ROOT_DIR/bom
 
     # generate DRC
@@ -103,6 +106,13 @@ main()
         echo "Generating BOM outputs";
         if [ ! -d "$BOM_DIR" ]; then mkdir -p $BOM_DIR; fi
         kicad-cli sch export bom --output="$BOM_DIR"/ghost-bot-bom.csv --group-by="Supplier Part Number" --format-preset=CSV --fields="Reference,Value,\${QUANTITY},\${DNP},Supplier Part Number,Manufacturer Part Number,Supplier " --field-delimiter="," "$SOURCE_DIR"/ghost-bot.kicad_sch
+    fi
+
+    # generate wrl
+    if [ "$GENERATE_ALL" = "1" ] || [ "$GENERATE_WRL" = "1" ]; then 
+        echo "Generating WRL outputs";
+        if [ ! -d "$WRL_DIR" ]; then mkdir -p $WRL_DIR; fi
+        kicad-cli pcb export vrml --output="$WRL_DIR"/ghost-bot.wrl "$SOURCE_DIR"/ghost-bot.kicad_pcb
     fi
 }
 main
