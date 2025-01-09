@@ -19,10 +19,15 @@ jobs:
             sudo add-apt-repository ppa:kicad/kicad-8.0-releases
             sudo apt update
             sudo apt install kicad
+    - name: Blender Dependencies
+      run: |
+            sudo apt install blender
     - name: Make output generation script executable
       run: chmod +x ./scripts/generate_kicad_outputs.sh
     - name: Generate all kicad outputs
       run: ./scripts/generate_kicad_outputs.sh --all
+    - name: Generate render
+      run: ./scripts/generate_render.sh
     - name: Zip up kicad outputs
       run: zip -r kicad_outputs.zip ./output
     - name: Create release
