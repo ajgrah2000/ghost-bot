@@ -26,7 +26,7 @@ def get_args():
 
     return args
 
-def import_and_render(input_file, output_file, object_rotation, camera_location):
+def import_and_render(input_file, output_file, object_rotation, camera_location, scale_factor):
 
     assembly = bpy.data.objects.new('ImportedAssembly', None)
     bpy.context.collection.objects.link(assembly)
@@ -50,7 +50,7 @@ def import_and_render(input_file, output_file, object_rotation, camera_location)
 
     # Moves object origin to 3D cursor wherever the cursor is located.
     bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-    bpy.ops.transform.rotate( value=object_rotation, orient_axis='Y')
+    bpy.ops.transform.rotate( value=object_rotation, orient_axis='X')
 
     target.select_set(True)
 
@@ -62,7 +62,7 @@ def import_and_render(input_file, output_file, object_rotation, camera_location)
     scale = max(max_x, max_y, max_z)
 
     # Fudge factor, place the camera further away..
-    scale *= 4
+    scale *= scale_factor
     print(scale)
     # Set camera location
     print(tuple(map(lambda x : x * scale, camera_location)))
@@ -74,6 +74,7 @@ def import_and_render(input_file, output_file, object_rotation, camera_location)
 def main():
     args = get_args()
     camera_location = (0.1, -0.3, 1.0) # Unit-ish vector (will be scaled by the size of the imported model)
-    import_and_render(args.input_file, args.output_file, args.rotation * math.pi / 180.0, camera_location)
+    # 'scale_factor' is a distance fudge for the camera.
+    import_and_render(args.input_file, args.output_file, args.rotation * math.pi / 180.0, camera_location, scale_factor=3.5)
 
 main()
