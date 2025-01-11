@@ -27,7 +27,10 @@ jobs:
     - name: Generate all kicad outputs
       run: ./scripts/generate_kicad_outputs.sh --all
     - name: Generate render
-      run: ./scripts/generate_render.sh
+      # Need a 'dummy' display to exist.
+      uses: coactions/setup-xvfb@v1
+      with: 
+        run: ./scripts/generate_render.sh
     - name: Zip up kicad outputs
       run: zip -r kicad_outputs.zip ./output
     - name: Create release

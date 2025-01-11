@@ -29,7 +29,10 @@ def get_args():
     return args
 
 def set_renderer_options():
+    # likely options: 'CYCLES', 'BLENDER_EEVEE_NEXT' or 'BLENDER_WORKBENCH'
+    # Some require a 'gpu' so aren't suitable for github actions.
     bpy.context.scene.render.engine = 'CYCLES'
+    bpy.context.scene.render.engine = 'BLENDER_EEVEE'
     # Set an upper time limit of rendering 
     bpy.context.scene.cycles.time_limit = 180 # seconds
 
